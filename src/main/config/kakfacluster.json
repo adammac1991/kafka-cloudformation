@@ -76,16 +76,7 @@
     }
 ,
     "AWSRegionArch2AMI" : {
-      "us-east-1"        : {"PV64" : "ami-50311038", "HVM64" : "ami-5231103a", "HVMG2" : "ami-8c6b40e4"},
-      "us-west-2"        : {"PV64" : "ami-5d79546d", "HVM64" : "ami-43795473", "HVMG2" : "ami-abbe919b"},
-      "us-west-1"        : {"PV64" : "ami-eb4fa8af", "HVM64" : "ami-f74fa8b3", "HVMG2" : "ami-f31ffeb7"},
-      "eu-west-1"        : {"PV64" : "ami-a71588d0", "HVM64" : "ami-a51588d2", "HVMG2" : "ami-d5bc24a2"},
-      "eu-central-1"     : {"PV64" : "ami-ac5c61b1", "HVM64" : "ami-a25c61bf", "HVMG2" : "ami-7cd2ef61"},
-      "ap-northeast-1"   : {"PV64" : "ami-8d1df78d", "HVM64" : "ami-a51df7a5", "HVMG2" : "ami-6318e863"},
-      "ap-southeast-1"   : {"PV64" : "ami-887041da", "HVM64" : "ami-5e73420c", "HVMG2" : "ami-3807376a"},
-      "ap-southeast-2"   : {"PV64" : "ami-bb1e6e81", "HVM64" : "ami-ad1e6e97", "HVMG2" : "ami-89790ab3"},
-      "sa-east-1"        : {"PV64" : "ami-29aa1234", "HVM64" : "ami-27aa123a", "HVMG2" : "NOT_SUPPORTED"},
-      "cn-north-1"       : {"PV64" : "ami-503aa869", "HVM64" : "ami-543aa86d", "HVMG2" : "NOT_SUPPORTED"}
+      "us-west-2"        : {"PV64" : "ami-29ebb519", "HVM64" : "ami-29ebb519", "HVMG2" : "ami-29ebb519"}
     }
 
   },
@@ -94,11 +85,15 @@
     "EC2Instance" : {
       "Type" : "AWS::EC2::Instance",
       "Properties" : {
+        "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+# : r!sh scriptinclude.sh
+         ]]}} ,
         "InstanceType" : { "Ref" : "InstanceType" },
         "SecurityGroups" : [ { "Ref" : "InstanceSecurityGroup" } ],
         "KeyName" : { "Ref" : "KeyName" },
         "ImageId" : { "Fn::FindInMap" : [ "AWSRegionArch2AMI", { "Ref" : "AWS::Region" },
-                          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] }
+                          { "Fn::FindInMap" : [ "AWSInstanceType2Arch", { "Ref" : "InstanceType" }, "Arch" ] } ] },
+	"Tags": [ { "Key" : "type" , "Value" : "kafka" } ]
       }
     },
 
